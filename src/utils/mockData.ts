@@ -185,3 +185,43 @@ export const getUpdatedData = (
   
   return { newData, newPrice };
 };
+
+// Function to update account data (simulated for live trading)
+export const getUpdatedAccountData = (
+  currentData: Array<{date: Date, balance: number}>
+) => {
+  const newData = [...currentData];
+  const lastBalance = newData[newData.length - 1].balance;
+  
+  // Trading performance: slightly higher chance of profit than loss
+  // Simulating the trading algorithm with a slight positive edge
+  const changePercent = (Math.random() * 0.4 - 0.15) / 100; // Slight positive bias
+  const newBalance = lastBalance * (1 + changePercent);
+  
+  // Add new day if necessary, otherwise update latest
+  const today = new Date();
+  const lastDate = newData[newData.length - 1].date;
+  
+  if (today.getDate() !== lastDate.getDate() || 
+      today.getMonth() !== lastDate.getMonth() || 
+      today.getFullYear() !== lastDate.getFullYear()) {
+    // If it's a new day, add a new data point
+    newData.push({
+      date: today,
+      balance: parseFloat(newBalance.toFixed(2))
+    });
+    
+    // If we have more than 90 days of data, remove the oldest
+    if (newData.length > 90) {
+      newData.shift();
+    }
+  } else {
+    // Otherwise update the latest data point
+    newData[newData.length - 1].balance = parseFloat(newBalance.toFixed(2));
+  }
+  
+  return { 
+    newData, 
+    newBalance: parseFloat(newBalance.toFixed(2)) 
+  };
+};

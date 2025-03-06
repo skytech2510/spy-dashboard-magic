@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   BarChart, 
@@ -8,7 +9,8 @@ import {
   Tooltip, 
   ResponsiveContainer,
   ReferenceLine,
-  TooltipProps
+  TooltipProps,
+  Cell
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { generateAccountData, calculateDailyProfitPercentages } from "@/utils/mockData";
@@ -71,7 +73,8 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
     .slice(Math.max(0, profitData.length - xAxisScale))
     .map(item => ({
       date: formatDate(item.date),
-      percentage: item.percentage
+      percentage: item.percentage,
+      isPositive: item.percentage >= 0
     }));
     
   return (
@@ -110,20 +113,12 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
           >
             <defs>
               <linearGradient id="positiveGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.95} />
-                <stop offset="100%" stopColor="#7C3AED" stopOpacity={0.65} />
+                <stop offset="0%" stopColor="#9B87F5" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#7E69AB" stopOpacity={0.7} />
               </linearGradient>
               <linearGradient id="negativeGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#F97316" stopOpacity={0.95} />
-                <stop offset="100%" stopColor="#EA580C" stopOpacity={0.65} />
-              </linearGradient>
-              <linearGradient id="positiveGradientAlt" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0EA5E9" stopOpacity={0.95} />
-                <stop offset="100%" stopColor="#0284C7" stopOpacity={0.65} />
-              </linearGradient>
-              <linearGradient id="negativeGradientAlt" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#D946EF" stopOpacity={0.95} />
-                <stop offset="100%" stopColor="#C026D3" stopOpacity={0.65} />
+                <stop offset="100%" stopColor="#C026D3" stopOpacity={0.7} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(120, 120, 120, 0.1)" />
@@ -148,10 +143,20 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
               dataKey="percentage" 
               animationDuration={500}
               radius={[6, 6, 0, 0]}
-              fill={(entry) => entry.percentage >= 0 ? "url(#positiveGradient)" : "url(#negativeGradient)"}
-              strokeWidth={1}
-              stroke={(entry) => entry.percentage >= 0 ? "rgba(139, 92, 246, 0.3)" : "rgba(249, 115, 22, 0.3)"}
-            />
+              barSize={30}
+            >
+              {
+                chartData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`}
+                    fill={entry.isPositive ? "url(#positiveGradient)" : "url(#negativeGradient)"}
+                    stroke={entry.isPositive ? "#8B5CF6" : "#D946EF"}
+                    strokeWidth={1}
+                    strokeOpacity={0.3}
+                  />
+                ))
+              }
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
         

@@ -22,9 +22,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     const date = label;
     
     return (
-      <div className="custom-tooltip">
-        <p className="custom-tooltip-label">{date}</p>
-        <p className="custom-tooltip-value">${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      <div className="custom-tooltip bg-background/80 backdrop-blur-sm p-2 rounded border border-border shadow-lg">
+        <p className="custom-tooltip-label font-medium">{date}</p>
+        <p className="custom-tooltip-value text-lg">${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
       </div>
     );
   }
@@ -36,7 +36,8 @@ const formatDate = (date: Date) => {
 };
 
 const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
-  const [data, setData] = useState(generateAccountData());
+  // Generate 90 days of historical data
+  const [data, setData] = useState(generateAccountData(90));
   const [currentBalance, setCurrentBalance] = useState(data[data.length - 1].balance);
   const [startBalance, setStartBalance] = useState(data[0].balance);
   const [xAxisScale, setXAxisScale] = useState(30); // Default to show 30 days
@@ -122,7 +123,7 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
                 {isPositive ? '▲' : '▼'} {Math.abs(gainPercent).toFixed(2)}%
               </span>
             </CardTitle>
-            <CardDescription>Trading performance</CardDescription>
+            <CardDescription>3-month trading performance</CardDescription>
           </div>
           <div className="text-right">
             <div className={`text-2xl font-bold transition-colors duration-300`}>

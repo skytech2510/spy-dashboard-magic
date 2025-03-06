@@ -20,9 +20,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     const time = label;
     
     return (
-      <div className="custom-tooltip">
-        <p className="custom-tooltip-label">{time}</p>
-        <p className="custom-tooltip-value">${price.toFixed(2)}</p>
+      <div className="custom-tooltip bg-background/80 backdrop-blur-sm p-2 rounded border border-border shadow-lg">
+        <p className="custom-tooltip-label font-medium">{time}</p>
+        <p className="custom-tooltip-value text-lg">${price.toFixed(2)}</p>
       </div>
     );
   }
@@ -34,7 +34,8 @@ const formatTime = (time: Date) => {
 };
 
 const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
-  const [data, setData] = useState(generateRealtimeData());
+  // Generate more realistic intraday data (120 data points)
+  const [data, setData] = useState(generateRealtimeData(120));
   const [currentPrice, setCurrentPrice] = useState(data[data.length - 1].price);
   const [prevPrice, setPrevPrice] = useState(currentPrice);
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -81,7 +82,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
                 {isPriceUp ? '▲' : '▼'} {Math.abs(priceChangePercent).toFixed(2)}%
               </span>
             </CardTitle>
-            <CardDescription>Real-time price tracking</CardDescription>
+            <CardDescription>Intraday price tracking</CardDescription>
           </div>
           <div className="text-right">
             <div className={`text-2xl font-bold ${isPriceUp ? 'text-green-500' : 'text-red-500'} transition-colors duration-300`}>

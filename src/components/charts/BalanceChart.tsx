@@ -1,39 +1,16 @@
 
 import { useState, useEffect, useRef } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from "recharts";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { generateAccountData } from "@/utils/mockData";
+import { formatDate } from "@/utils/chartUtils";
+import CustomTooltip from "./CustomTooltip";
+import ChartControls from "./ChartControls";
+import BalanceChartHeader from "./BalanceChartHeader";
 
 interface BalanceChartProps {
   isTrading: boolean;
 }
-
-interface CustomTooltipProps extends TooltipProps<number, string> {
-  active?: boolean;
-  payload?: any[];
-  label?: string;
-}
-
-const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    const balance = payload[0].value;
-    const date = label;
-    
-    return (
-      <div className="custom-tooltip bg-background/80 backdrop-blur-sm p-2 rounded border border-border shadow-lg">
-        <p className="custom-tooltip-label font-medium">{date}</p>
-        <p className="custom-tooltip-value text-lg">${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-      </div>
-    );
-  }
-  return null;
-};
-
-const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
-};
 
 const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
   // Generate 90 days of historical data
@@ -86,10 +63,6 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
     };
   }, [isTrading, data]);
 
-  const totalGain = currentBalance - startBalance;
-  const gainPercent = (totalGain / startBalance) * 100;
-  const isPositive = totalGain >= 0;
-
   // Zoom in function to show fewer days
   const zoomIn = () => {
     if (xAxisScale > 7) {
@@ -115,25 +88,7 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
   return (
     <Card className="glass-card overflow-hidden transition-all duration-300 h-full animate-fade-in">
       <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle className="text-xl flex items-center gap-2">
-              Account Balance
-              <span className={`text-sm font-normal ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                {isPositive ? '▲' : '▼'} {Math.abs(gainPercent).toFixed(2)}%
-              </span>
-            </CardTitle>
-            <CardDescription>3-month trading performance</CardDescription>
-          </div>
-          <div className="text-right">
-            <div className={`text-2xl font-bold transition-colors duration-300`}>
-              ${currentBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </div>
-            <div className={`text-xs ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-              {isPositive ? '+' : '-'}${Math.abs(totalGain).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </div>
-          </div>
-        </div>
+        <BalanceChartHeader currentBalance={currentBalance} startBalance={startBalance} />
       </CardHeader>
       <CardContent className="p-0 h-[250px] relative">
         <ResponsiveContainer width="100%" height="100%">
@@ -170,29 +125,12 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
           </AreaChart>
         </ResponsiveContainer>
         
-        {/* Zoom controls */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1">
-          <Button 
-            size="icon" 
-            variant="ghost" 
-            className="h-7 w-7 rounded-full bg-background/80 backdrop-blur-sm"
-            onClick={zoomIn}
-            disabled={xAxisScale <= 7}
-            title="Zoom in"
-          >
-            <ZoomIn className="h-4 w-4" />
-          </Button>
-          <Button 
-            size="icon" 
-            variant="ghost" 
-            className="h-7 w-7 rounded-full bg-background/80 backdrop-blur-sm"
-            onClick={zoomOut}
-            disabled={xAxisScale >= data.length}
-            title="Zoom out"
-          >
-            <ZoomOut className="h-4 w-4" />
-          </Button>
-        </div>
+        <ChartControls 
+          onZoomIn={zoomIn}
+          onZoomOut={zoomOut}
+          canZoomIn={xAxisScale > 7}
+          canZoomOut={xAxisScale < data.length}
+        />
       </CardContent>
     </Card>
   );

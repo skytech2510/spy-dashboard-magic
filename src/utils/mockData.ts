@@ -225,3 +225,23 @@ export const getUpdatedAccountData = (
     newBalance: parseFloat(newBalance.toFixed(2)) 
   };
 };
+
+// Function to calculate daily profit percentages from account data
+export const calculateDailyProfitPercentages = (accountData: Array<{date: Date, balance: number}>) => {
+  if (accountData.length < 2) return [];
+  
+  const profitData = [];
+  
+  for (let i = 1; i < accountData.length; i++) {
+    const yesterdayBalance = accountData[i-1].balance;
+    const todayBalance = accountData[i].balance;
+    const percentChange = ((todayBalance - yesterdayBalance) / yesterdayBalance) * 100;
+    
+    profitData.push({
+      date: accountData[i].date,
+      percentage: parseFloat(percentChange.toFixed(2))
+    });
+  }
+  
+  return profitData;
+};

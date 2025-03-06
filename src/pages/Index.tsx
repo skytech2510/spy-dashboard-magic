@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import PriceChart from "@/components/PriceChart";
 import BalanceChart from "@/components/BalanceChart";
+import DailyProfitChart from "@/components/DailyProfitChart";
 import TradeButton from "@/components/TradeButton";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,10 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <PriceChart isTrading={isTrading} />
           <BalanceChart isTrading={isTrading} />
+        </div>
+        
+        <div className="mb-6">
+          <DailyProfitChart isTrading={isTrading} />
         </div>
         
         {/* Stats and control panel */}

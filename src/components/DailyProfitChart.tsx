@@ -33,9 +33,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     const isPositive = value >= 0;
     
     return (
-      <div className="custom-tooltip bg-background/80 backdrop-blur-sm p-2 rounded border border-border shadow-lg">
+      <div className="custom-tooltip bg-background/95 backdrop-blur-sm p-3 rounded-xl border border-border shadow-xl">
         <p className="custom-tooltip-label font-medium">{label}</p>
-        <p className={`custom-tooltip-value text-lg ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+        <p className={`custom-tooltip-value text-lg font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
           {isPositive ? '+' : ''}{value.toFixed(2)}%
         </p>
       </div>
@@ -82,24 +82,28 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
     }));
     
   return (
-    <Card className="glass-card overflow-hidden transition-all duration-300 h-full animate-fade-in">
+    <Card className="glass-card overflow-hidden transition-all duration-300 h-full animate-fade-in border-none shadow-lg bg-gradient-to-br from-white/50 to-white/30 dark:from-black/50 dark:to-black/30">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <div>
-            <CardTitle className="text-xl">Daily Profit/Loss</CardTitle>
-            <CardDescription>Daily trading performance (%)</CardDescription>
+            <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-300">
+              Daily Profit/Loss
+            </CardTitle>
+            <CardDescription className="text-muted-foreground/80">
+              Daily trading performance (%)
+            </CardDescription>
           </div>
           <div className="text-right grid grid-cols-3 gap-x-4 text-sm">
-            <div>
-              <div className="text-muted-foreground">Win Rate</div>
+            <div className="bg-background/40 backdrop-blur-sm p-2 rounded-lg">
+              <div className="text-muted-foreground text-xs">Win Rate</div>
               <div className="font-bold">{winRate}%</div>
             </div>
-            <div>
-              <div className="text-muted-foreground">Avg Gain</div>
+            <div className="bg-background/40 backdrop-blur-sm p-2 rounded-lg">
+              <div className="text-muted-foreground text-xs">Avg Gain</div>
               <div className="font-bold text-green-500">+{avgGain}%</div>
             </div>
-            <div>
-              <div className="text-muted-foreground">Avg Loss</div>
+            <div className="bg-background/40 backdrop-blur-sm p-2 rounded-lg">
+              <div className="text-muted-foreground text-xs">Avg Loss</div>
               <div className="font-bold text-red-500">{avgLoss}%</div>
             </div>
           </div>
@@ -111,13 +115,24 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
             data={chartData}
             margin={{ top: 5, right: 15, left: 0, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <defs>
+              <linearGradient id="positiveGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="hsl(142, 72%, 50%)" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="hsl(142, 72%, 50%)" stopOpacity={0.6} />
+              </linearGradient>
+              <linearGradient id="negativeGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0.6} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(120, 120, 120, 0.1)" />
             <XAxis 
               dataKey="date" 
               tick={{ fontSize: 10 }} 
               tickLine={false}
               axisLine={false}
               minTickGap={30}
+              dy={5}
             />
             <YAxis 
               tick={{ fontSize: 10 }} 
@@ -126,13 +141,13 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
               axisLine={false}
               width={45}
             />
-            <Tooltip content={<CustomTooltip />} />
-            <ReferenceLine y={0} stroke="#888" strokeWidth={1} />
+            <Tooltip content={<CustomTooltip />} cursor={{ opacity: 0.2 }} />
+            <ReferenceLine y={0} stroke="rgba(120, 120, 120, 0.3)" strokeWidth={1} />
             <Bar 
               dataKey="percentage" 
               animationDuration={500}
-              fill={(data) => (data.percentage >= 0 ? "hsl(var(--trade-active))" : "hsl(var(--trade-inactive))")}
               radius={[4, 4, 0, 0]}
+              fill={(entry) => entry.percentage >= 0 ? "url(#positiveGradient)" : "url(#negativeGradient)"}
             />
           </BarChart>
         </ResponsiveContainer>

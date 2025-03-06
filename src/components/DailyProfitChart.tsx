@@ -113,12 +113,12 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
           >
             <defs>
               <linearGradient id="positiveGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#9B87F5" stopOpacity={0.95} />
-                <stop offset="100%" stopColor="#7E69AB" stopOpacity={0.7} />
+                <stop offset="0%" stopColor="#10B981" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#059669" stopOpacity={0.7} />
               </linearGradient>
               <linearGradient id="negativeGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#D946EF" stopOpacity={0.95} />
-                <stop offset="100%" stopColor="#C026D3" stopOpacity={0.7} />
+                <stop offset="0%" stopColor="#F43F5E" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#E11D48" stopOpacity={0.7} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(120, 120, 120, 0.1)" />
@@ -150,7 +150,7 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
                   <Cell 
                     key={`cell-${index}`}
                     fill={entry.isPositive ? "url(#positiveGradient)" : "url(#negativeGradient)"}
-                    stroke={entry.isPositive ? "#8B5CF6" : "#D946EF"}
+                    stroke={entry.isPositive ? "#059669" : "#E11D48"}
                     strokeWidth={1}
                     strokeOpacity={0.3}
                   />

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Login = () => {
   const [password, setPassword] = useState("");
@@ -44,8 +45,12 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-secondary p-4 overflow-hidden">
       <div className="grid-pattern absolute inset-0 opacity-20"></div>
       
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
       <div className="w-full max-w-md z-10 animate-fade-in-up">
-        <Card className="glass-card border-white/20 shadow-xl">
+        <Card className="glass-card border-white/20 dark:border-gray-800/50 shadow-xl">
           <CardHeader className="space-y-1 text-center">
             <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-2">
               <Lock className="h-6 w-6 text-primary" />
@@ -64,7 +69,7 @@ const Login = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white/50 dark:bg-black/50 border border-white/20 dark:border-black/20"
+                  className="bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/20"
                   autoComplete="current-password"
                   required
                 />

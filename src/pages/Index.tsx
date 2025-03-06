@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import PriceChart from "@/components/PriceChart";
 import BalanceChart from "@/components/BalanceChart";
 import TradeButton from "@/components/TradeButton";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
@@ -34,12 +35,15 @@ const Index = () => {
       <div className="grid-pattern absolute inset-0 opacity-20"></div>
       
       {/* Header */}
-      <header className="border-b border-white/10 backdrop-blur-sm bg-white/30 dark:bg-black/30 z-10">
+      <header className="border-b border-white/10 dark:border-gray-800 backdrop-blur-sm bg-white/30 dark:bg-black/30 z-10">
         <div className="container flex justify-between items-center py-4">
           <h1 className="text-2xl font-bold">SPY Trading Bot Dashboard</h1>
-          <Button variant="ghost" size="icon" onClick={logout}>
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" onClick={logout}>
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </header>
       
@@ -51,33 +55,33 @@ const Index = () => {
         </div>
         
         {/* Stats and control panel */}
-        <div className="glass-card p-6 rounded-lg border border-white/10 animate-fade-in">
+        <div className="glass-card p-6 rounded-lg border border-white/10 dark:border-gray-800 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Stats */}
             <div className="space-y-6 col-span-1 md:col-span-2">
               <h2 className="text-xl font-semibold mb-4">Trading Statistics</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-white/50 dark:bg-black/50 p-4 rounded-lg">
+                <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Win Rate</p>
                   <p className="text-2xl font-bold">68%</p>
                 </div>
-                <div className="bg-white/50 dark:bg-black/50 p-4 rounded-lg">
+                <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Avg. Profit</p>
                   <p className="text-2xl font-bold text-green-500">+0.87%</p>
                 </div>
-                <div className="bg-white/50 dark:bg-black/50 p-4 rounded-lg">
+                <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Avg. Loss</p>
                   <p className="text-2xl font-bold text-red-500">-0.52%</p>
                 </div>
-                <div className="bg-white/50 dark:bg-black/50 p-4 rounded-lg">
+                <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Total Trades</p>
                   <p className="text-2xl font-bold">156</p>
                 </div>
-                <div className="bg-white/50 dark:bg-black/50 p-4 rounded-lg">
+                <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Avg. Duration</p>
                   <p className="text-2xl font-bold">2.4h</p>
                 </div>
-                <div className="bg-white/50 dark:bg-black/50 p-4 rounded-lg">
+                <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Last Trade</p>
                   <p className="text-2xl font-bold text-green-500">+$127</p>
                 </div>
@@ -101,7 +105,7 @@ const Index = () => {
       </main>
       
       {/* Footer */}
-      <footer className="border-t border-white/10 py-4 text-center text-sm text-muted-foreground backdrop-blur-sm bg-white/30 dark:bg-black/30 z-10">
+      <footer className="border-t border-white/10 dark:border-gray-800 py-4 text-center text-sm text-muted-foreground backdrop-blur-sm bg-white/30 dark:bg-black/30 z-10">
         <div className="container">
           SPY Trading Bot Dashboard &copy; {new Date().getFullYear()}
         </div>

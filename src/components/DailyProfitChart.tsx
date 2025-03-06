@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   BarChart, 
@@ -45,35 +44,29 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 };
 
 const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
-  // Get account data from mock data generator
   const accountData = generateAccountData(90);
   
-  // Calculate daily profit percentages
   const [profitData, setProfitData] = useState(calculateDailyProfitPercentages(accountData));
-  const [xAxisScale, setXAxisScale] = useState(14); // Default to show 14 days
-  
-  // Calculate statistics
+  const [xAxisScale, setXAxisScale] = useState(14);
+
   const positiveCount = profitData.filter(d => d.percentage > 0).length;
   const negativeCount = profitData.filter(d => d.percentage < 0).length;
   const winRate = (positiveCount / profitData.length * 100).toFixed(1);
   const avgGain = (profitData.filter(d => d.percentage > 0).reduce((sum, d) => sum + d.percentage, 0) / positiveCount || 0).toFixed(2);
   const avgLoss = (profitData.filter(d => d.percentage < 0).reduce((sum, d) => sum + d.percentage, 0) / negativeCount || 0).toFixed(2);
-  
-  // Zoom in function to show fewer days
+
   const zoomIn = () => {
     if (xAxisScale > 7) {
       setXAxisScale(Math.max(7, xAxisScale - 7));
     }
   };
 
-  // Zoom out function to show more days
   const zoomOut = () => {
     if (xAxisScale < profitData.length) {
       setXAxisScale(Math.min(profitData.length, xAxisScale + 7));
     }
   };
 
-  // Filter data based on current scale
   const chartData = profitData
     .slice(Math.max(0, profitData.length - xAxisScale))
     .map(item => ({
@@ -117,12 +110,20 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
           >
             <defs>
               <linearGradient id="positiveGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(142, 72%, 50%)" stopOpacity={0.9} />
-                <stop offset="100%" stopColor="hsl(142, 72%, 50%)" stopOpacity={0.6} />
+                <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#7C3AED" stopOpacity={0.65} />
               </linearGradient>
               <linearGradient id="negativeGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0.9} />
-                <stop offset="100%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0.6} />
+                <stop offset="0%" stopColor="#F97316" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#EA580C" stopOpacity={0.65} />
+              </linearGradient>
+              <linearGradient id="positiveGradientAlt" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#0EA5E9" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#0284C7" stopOpacity={0.65} />
+              </linearGradient>
+              <linearGradient id="negativeGradientAlt" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#D946EF" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#C026D3" stopOpacity={0.65} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(120, 120, 120, 0.1)" />
@@ -146,8 +147,10 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
             <Bar 
               dataKey="percentage" 
               animationDuration={500}
-              radius={[4, 4, 0, 0]}
+              radius={[6, 6, 0, 0]}
               fill={(entry) => entry.percentage >= 0 ? "url(#positiveGradient)" : "url(#negativeGradient)"}
+              strokeWidth={1}
+              stroke={(entry) => entry.percentage >= 0 ? "rgba(139, 92, 246, 0.3)" : "rgba(249, 115, 22, 0.3)"}
             />
           </BarChart>
         </ResponsiveContainer>

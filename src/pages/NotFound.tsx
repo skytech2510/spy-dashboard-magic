@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { Link } from "react-router-dom";
 
 const NotFound = () => {
   const location = useLocation();
@@ -24,11 +25,11 @@ const NotFound = () => {
         <p className="text-xl text-muted-foreground mb-6">
           Oops! The page you're looking for cannot be found.
         </p>
-        <Button href="/" asChild>
-          <a className="inline-flex items-center gap-2">
+        <Button asChild>
+          <Link to="/" className="inline-flex items-center gap-2">
             <Home className="h-4 w-4" />
             Return to Dashboard
-          </a>
+          </Link>
         </Button>
       </div>
     </div>

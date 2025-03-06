@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ZoomIn, ZoomOut } from "lucide-react";
 import { generateAccountData } from "@/utils/mockData";
 
 interface BalanceChartProps {
@@ -37,6 +39,7 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
   const [data, setData] = useState(generateAccountData());
   const [currentBalance, setCurrentBalance] = useState(data[data.length - 1].balance);
   const [startBalance, setStartBalance] = useState(data[0].balance);
+  const [xAxisScale, setXAxisScale] = useState(30); // Default to show 30 days
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Effect for handling data updates
@@ -86,10 +89,27 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
   const gainPercent = (totalGain / startBalance) * 100;
   const isPositive = totalGain >= 0;
 
-  const chartData = data.map(item => ({
-    date: formatDate(item.date),
-    balance: item.balance
-  }));
+  // Zoom in function to show fewer days
+  const zoomIn = () => {
+    if (xAxisScale > 7) {
+      setXAxisScale(Math.max(7, xAxisScale - 7));
+    }
+  };
+
+  // Zoom out function to show more days
+  const zoomOut = () => {
+    if (xAxisScale < data.length) {
+      setXAxisScale(Math.min(data.length, xAxisScale + 7));
+    }
+  };
+
+  // Filter data based on current scale
+  const chartData = data
+    .slice(Math.max(0, data.length - xAxisScale))
+    .map(item => ({
+      date: formatDate(item.date),
+      balance: item.balance
+    }));
 
   return (
     <Card className="glass-card overflow-hidden transition-all duration-300 h-full animate-fade-in">
@@ -114,7 +134,7 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-0 h-[250px]">
+      <CardContent className="p-0 h-[250px] relative">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}
@@ -148,6 +168,30 @@ const BalanceChart: React.FC<BalanceChartProps> = ({ isTrading }) => {
             />
           </AreaChart>
         </ResponsiveContainer>
+        
+        {/* Zoom controls */}
+        <div className="absolute top-2 right-2 flex flex-col gap-1">
+          <Button 
+            size="icon" 
+            variant="ghost" 
+            className="h-7 w-7 rounded-full bg-background/80 backdrop-blur-sm"
+            onClick={zoomIn}
+            disabled={xAxisScale <= 7}
+            title="Zoom in"
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
+          <Button 
+            size="icon" 
+            variant="ghost" 
+            className="h-7 w-7 rounded-full bg-background/80 backdrop-blur-sm"
+            onClick={zoomOut}
+            disabled={xAxisScale >= data.length}
+            title="Zoom out"
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

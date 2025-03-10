@@ -1,5 +1,5 @@
 // Function to generate realistic SPY price data
-export const generateSpyPriceData = (days = 90, startPrice = 470.00) => {
+export const generateSpyPriceData = (days = 90, startPrice = 570.00) => {
   const data = [];
   let currentPrice = startPrice;
   

@@ -1,5 +1,5 @@
 // Function to generate realistic SPY price data
-export const generateSpyPriceData = (days = 90, startPrice = 970.00) => {
+export const generateSpyPriceData = (days = 90, startPrice = 570.00) => {
   const data = [];
   let currentPrice = startPrice;
   
@@ -124,7 +124,7 @@ export const generateAccountData = (days = 90, startBalance = 10000) => {
 };
 
 // Generate real-time data points (last hour)
-export const generateRealtimeData = (points = 60, basePrice = 472.50) => {
+export const generateRealtimeData = (points = 60, basePrice = 572.50) => {
   // Use the last X days of spy data and scale it down to minutes
   const spyData = generateSpyPriceData(points / 2);
   const data = [];
@@ -156,7 +156,7 @@ export const generateRealtimeData = (points = 60, basePrice = 472.50) => {
 };
 
 // Function to get live price data (simulated)
-export const getLivePrice = (lastPrice = 472.50): number => {
+export const getLivePrice = (lastPrice = 572.50): number => {
   // Simulate small price movements based on a random walk with drift
   // Upward drift of 0.01% on average (annualized ~2.5%)
   const drift = 0.0001 * (Math.random() * 0.5 + 0.75);

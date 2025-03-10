@@ -49,7 +49,7 @@ const DailyProfitChart: React.FC<DailyProfitChartProps> = ({ isTrading }) => {
   const accountData = generateAccountData(90);
   
   const [profitData, setProfitData] = useState(calculateDailyProfitPercentages(accountData));
-  const [xAxisScale, setXAxisScale] = useState(14);
+  const [xAxisScale, setXAxisScale] = useState(28);
 
   const positiveCount = profitData.filter(d => d.percentage > 0).length;
   const negativeCount = profitData.filter(d => d.percentage < 0).length;

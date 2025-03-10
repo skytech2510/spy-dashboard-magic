@@ -71,9 +71,9 @@ export const generateAccountData = (days = 90, startBalance = 10000) => {
   startDate.setDate(endDate.getDate() - days);
   
   // Define trading strategy parameters
-  const winRate = 0.68; // 68% success rate as shown in stats
-  const avgWinPercent = 0.87 / 100; // 0.87% average win
-  const avgLossPercent = 0.52 / 100; // 0.52% average loss
+  const winRate = 0.75; // 68% success rate as shown in stats
+  const avgWinPercent = 2.8 / 100; // 0.87% average win
+  const avgLossPercent = 1.4 / 100; // 0.52% average loss
   
   // Keep track of total trades for statistics
   let totalTrades = 0;

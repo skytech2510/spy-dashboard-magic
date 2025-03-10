@@ -68,15 +68,15 @@ const Index = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Win Rate</p>
-                  <p className="text-2xl font-bold">68%</p>
+                  <p className="text-2xl font-bold">74%</p>
                 </div>
                 <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Avg. Profit</p>
-                  <p className="text-2xl font-bold text-green-500">+0.87%</p>
+                  <p className="text-2xl font-bold text-green-500">+2.87%</p>
                 </div>
                 <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Avg. Loss</p>
-                  <p className="text-2xl font-bold text-red-500">-0.52%</p>
+                  <p className="text-2xl font-bold text-red-500">-0.65%</p>
                 </div>
                 <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">Total Trades</p>

@@ -4,31 +4,33 @@ const apiKey = 'PKKM3YOXZW9RGFKNRBKC';
 const secretKey = 'SZhLbm93gJfmjiBq4PwbAD3QKnBKK6VThaX7WHDE';
 const baseUrl = 'https://data.alpaca.markets/v2/stocks';
 const symbol = 'SPY';
+interface Quote {
+  ap: number; // Ask price
+  as: number; // Ask size
+  ax: string; // Ask exchange
+  bp: number; // Bid price
+  bs: number; // Bid size
+  bx: string; // Bid exchange
+  c: string[]; // Conditions
+  t: string; // Timestamp
+  z: string; // Exchange
+}
 
-interface QuoteData {
-  symbol: string;
-  last: {
-    price: number;
-    size: number;
-    timestamp: number;
-  };
-  askprice?: number;
-  asksize?: number;
-  bidprice?: number;
-  bidsize?: number;
-  timestamp?: number;
+interface QuoteResponse {
+  quote: Quote;
+  symbol: string; // Stock symbol
 }
 
 export async function getRealTimePrice(): Promise<number | null> {
   try {
-    const url = `${baseUrl}/${symbol}/quotes`;
+    const url = `${baseUrl}/${symbol}/quotes/latest`;
 
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'APCA-API-KEY-ID': apiKey,
         'APCA-API-SECRET-KEY': secretKey,
-        'Content-Type': 'application/json'
+        'accept': 'application/json',
       }
     });
 
@@ -37,9 +39,9 @@ export async function getRealTimePrice(): Promise<number | null> {
       return null;
     }
 
-    const data: QuoteData = await response.json();
-    console.log(`Current price of ${symbol}: $${data.last.price}`);
-    return data.last.price;
+    const data: QuoteResponse = await response.json();
+    console.log(`Current price of ${symbol}: $${data.quote.ap}`);
+    return data.quote.ap;
   } catch (error) {
     console.error('Failed to fetch SPY price:', error);
     return null;

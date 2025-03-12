@@ -124,7 +124,7 @@ export const generateAccountData = (days = 90, startBalance = 10000) => {
 };
 
 // Generate real-time data points (last hour)
-export const generateRealtimeData = (points = 60, basePrice = 572.50) => {
+export const generateRealtimeData = (points = 60, basePrice = 558.50) => {
   // Use the last X days of spy data and scale it down to minutes
   const spyData = generateSpyPriceData(points / 2);
   const data = [];

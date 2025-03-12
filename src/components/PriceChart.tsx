@@ -47,7 +47,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
     try {
       // Get price from Alpaca
       const newPrice = await getRealTimePrice();
-      
+
       // If we got a valid price, update the chart
       if (newPrice !== null) {
         setPrevPrice(currentPrice);
@@ -102,7 +102,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
       // Set new interval (every 60 seconds)
       updateIntervalRef.current = setInterval(() => {
         updateChartWithRealData();
-      }, 60 * 1000); // 60 seconds
+      }, 1000); // 60 seconds
     } else if (updateIntervalRef.current) {
       clearInterval(updateIntervalRef.current);
     }

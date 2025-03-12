@@ -2,7 +2,7 @@
 // Alpaca API service for fetching real market data
 const apiKey = 'PKKM3YOXZW9RGFKNRBKC';
 const secretKey = 'SZhLbm93gJfmjiBq4PwbAD3QKnBKK6VThaX7WHDE';
-const baseUrl = 'https://paper-api.alpaca.markets/v2';
+const baseUrl = 'https://data.alpaca.markets/v2/stocks';
 const symbol = 'SPY';
 
 interface QuoteData {
@@ -21,7 +21,7 @@ interface QuoteData {
 
 export async function getRealTimePrice(): Promise<number | null> {
   try {
-    const url = `${baseUrl}/quotes/${symbol}`;
+    const url = `${baseUrl}/${symbol}/quotes`;
 
     const response = await fetch(url, {
       method: 'GET',

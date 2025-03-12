@@ -113,7 +113,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
       // Set new interval (every 60 seconds)
       updateIntervalRef.current = setInterval(() => {
         updateChartWithRealData();
-      }, 60000); // 60 seconds
+      }, 2000); // 60 seconds
     } else if (updateIntervalRef.current) {
       clearInterval(updateIntervalRef.current);
     }

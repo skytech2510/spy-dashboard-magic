@@ -55,7 +55,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
         }
         
         const now = new Date();
-        
+        console.log(data)
         // Update the data array
         const newData = [...data];
         

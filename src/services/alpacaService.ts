@@ -4,6 +4,7 @@ const apiKey = 'PKKM3YOXZW9RGFKNRBKC';
 const secretKey = 'SZhLbm93gJfmjiBq4PwbAD3QKnBKK6VThaX7WHDE';
 const baseUrl = 'https://data.alpaca.markets/v2/stocks';
 const symbol = 'SPY';
+
 interface Quote {
   ap: number; // Ask price
   as: number; // Ask size

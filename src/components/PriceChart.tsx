@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { generateRealtimeData } from "@/utils/mockData";
 import { getRealTimePrice, getFallbackPrice } from "@/services/alpacaService";
 
 interface PriceChartProps {
@@ -35,11 +34,11 @@ const formatTime = (time: Date) => {
 };
 
 const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
-  // Initialize with some mock data for immediate display
-  const [data, setData] = useState(generateRealtimeData(120));
-  const [currentPrice, setCurrentPrice] = useState(data[data.length - 1].price);
-  const [prevPrice, setPrevPrice] = useState(currentPrice);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [data, setData] = useState<Array<{time: Date, price: number}>>([]);
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [prevPrice, setPrevPrice] = useState<number | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Function to update the chart with real-time data
@@ -50,12 +49,20 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
 
       // If we got a valid price, update the chart
       if (newPrice !== null) {
-        setPrevPrice(currentPrice);
+        if (currentPrice !== null) {
+          setPrevPrice(currentPrice);
+        }
+        
         const now = new Date();
         
-        // Update the data array by removing oldest point and adding new one
+        // Update the data array
         const newData = [...data];
-        newData.shift();
+        
+        // If we have more than 120 data points, remove the oldest
+        if (newData.length >= 120) {
+          newData.shift();
+        }
+        
         newData.push({
           time: now,
           price: newPrice
@@ -64,15 +71,19 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
         setData(newData);
         setCurrentPrice(newPrice);
         setLastUpdated(now);
-      } else {
-        // If API call failed, use fallback
+        setIsLoading(false);
+      } else if (currentPrice !== null) {
+        // If API call failed but we have a previous price, use fallback
         console.log("Using fallback price data");
         const fallbackPrice = getFallbackPrice(currentPrice);
         setPrevPrice(currentPrice);
         const now = new Date();
         
         const newData = [...data];
-        newData.shift();
+        if (newData.length >= 120) {
+          newData.shift();
+        }
+        
         newData.push({
           time: now,
           price: fallbackPrice
@@ -102,7 +113,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
       // Set new interval (every 60 seconds)
       updateIntervalRef.current = setInterval(() => {
         updateChartWithRealData();
-      }, 1000); // 60 seconds
+      }, 60000); // 60 seconds
     } else if (updateIntervalRef.current) {
       clearInterval(updateIntervalRef.current);
     }
@@ -113,16 +124,37 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
         clearInterval(updateIntervalRef.current);
       }
     };
-  }, [isTrading, currentPrice]);
+  }, [isTrading]);
 
-  const priceChange = currentPrice - prevPrice;
-  const priceChangePercent = (priceChange / prevPrice) * 100;
+  // Calculate price change values if we have current and previous prices
+  const priceChange = currentPrice !== null && prevPrice !== null ? currentPrice - prevPrice : 0;
+  const priceChangePercent = currentPrice !== null && prevPrice !== null && prevPrice !== 0 
+    ? (priceChange / prevPrice) * 100 
+    : 0;
   const isPriceUp = priceChange >= 0;
 
   const chartData = data.map(item => ({
     time: formatTime(item.time),
     price: item.price
   }));
+
+  // Show loading state when waiting for data
+  if (isLoading) {
+    return (
+      <Card className="glass-card overflow-hidden transition-all duration-300 h-full animate-fade-in">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl">SPY Price</CardTitle>
+          <CardDescription>Loading real-time data from Alpaca...</CardDescription>
+        </CardHeader>
+        <CardContent className="p-6 flex items-center justify-center h-[250px]">
+          <div className="animate-pulse flex flex-col items-center">
+            <div className="h-6 w-24 bg-muted rounded mb-2"></div>
+            <div className="text-sm text-muted-foreground">Fetching latest price...</div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="glass-card overflow-hidden transition-all duration-300 h-full animate-fade-in">
@@ -131,56 +163,70 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
           <div>
             <CardTitle className="text-xl flex items-center gap-2">
               SPY Price 
-              <span className={`text-sm font-normal ${isPriceUp ? 'text-green-500' : 'text-red-500'}`}>
-                {isPriceUp ? '▲' : '▼'} {Math.abs(priceChangePercent).toFixed(2)}%
-              </span>
+              {prevPrice !== null && (
+                <span className={`text-sm font-normal ${isPriceUp ? 'text-green-500' : 'text-red-500'}`}>
+                  {isPriceUp ? '▲' : '▼'} {Math.abs(priceChangePercent).toFixed(2)}%
+                </span>
+              )}
             </CardTitle>
             <CardDescription>Real-time price from Alpaca</CardDescription>
           </div>
           <div className="text-right">
-            <div className={`text-2xl font-bold ${isPriceUp ? 'text-green-500' : 'text-red-500'} transition-colors duration-300`}>
-              ${currentPrice.toFixed(2)}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              Last updated: {lastUpdated.toLocaleTimeString()}
-            </div>
+            {currentPrice !== null && (
+              <div className={`text-2xl font-bold ${isPriceUp ? 'text-green-500' : 'text-red-500'} transition-colors duration-300`}>
+                ${currentPrice.toFixed(2)}
+              </div>
+            )}
+            {lastUpdated && (
+              <div className="text-xs text-muted-foreground">
+                Last updated: {lastUpdated.toLocaleTimeString()}
+              </div>
+            )}
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-0 h-[250px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            margin={{ top: 5, right: 15, left: 0, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis 
-              dataKey="time" 
-              tick={{ fontSize: 10 }} 
-              tickLine={false}
-              axisLine={false}
-              minTickGap={30}
-            />
-            <YAxis 
-              domain={['dataMin - 1', 'dataMax + 1']} 
-              tick={{ fontSize: 10 }} 
-              tickFormatter={(value) => `$${value}`}
-              tickLine={false}
-              axisLine={false}
-              width={60}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Line 
-              type="monotone" 
-              dataKey="price" 
-              stroke="hsl(var(--chart-line))" 
-              strokeWidth={2} 
-              dot={false}
-              activeDot={{ r: 5, stroke: "white", strokeWidth: 2 }}
-              animationDuration={300}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {data.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={chartData}
+              margin={{ top: 5, right: 15, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis 
+                dataKey="time" 
+                tick={{ fontSize: 10 }} 
+                tickLine={false}
+                axisLine={false}
+                minTickGap={30}
+              />
+              <YAxis 
+                domain={['dataMin - 1', 'dataMax + 1']} 
+                tick={{ fontSize: 10 }} 
+                tickFormatter={(value) => `$${value}`}
+                tickLine={false}
+                axisLine={false}
+                width={60}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Line 
+                type="monotone" 
+                dataKey="price" 
+                stroke="hsl(var(--chart-line))" 
+                strokeWidth={2} 
+                dot={false}
+                activeDot={{ r: 5, stroke: "white", strokeWidth: 2 }}
+                animationDuration={300}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center text-muted-foreground">
+              Waiting for data...
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

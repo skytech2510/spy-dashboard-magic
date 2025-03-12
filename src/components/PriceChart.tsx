@@ -29,8 +29,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   return null;
 };
 
+// Updated format function to include seconds
 const formatTime = (time: Date) => {
-  return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 };
 
 const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
@@ -179,7 +180,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
             )}
             {lastUpdated && (
               <div className="text-xs text-muted-foreground">
-                Last updated: {lastUpdated.toLocaleTimeString()}
+                Last updated: {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </div>
             )}
           </div>
@@ -198,7 +199,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
                 tick={{ fontSize: 10 }} 
                 tickLine={false}
                 axisLine={false}
-                minTickGap={30}
+                minTickGap={20}  // Reduced minTickGap to show more time labels
               />
               <YAxis 
                 domain={['dataMin - 1', 'dataMax + 1']} 

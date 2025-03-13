@@ -55,21 +55,26 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
         }
         
         const now = new Date();
-        console.log(data)
-        // Update the data array
-        const newData = [...data];
         
-        // If we have more than 120 data points, remove the oldest
-        if (newData.length >= 120) {
-          newData.shift();
-        }
-        
-        newData.push({
-          time: now,
-          price: newPrice
+        // Create a new copy of the data array and add the new point
+        // This ensures React detects the state change properly
+        setData(prevData => {
+          const newData = [...prevData];
+          
+          // If we have more than 120 data points, remove the oldest
+          if (newData.length >= 120) {
+            newData.shift();
+          }
+          
+          // Add the new data point
+          newData.push({
+            time: now,
+            price: newPrice
+          });
+          
+          return newData;
         });
         
-        setData(newData);
         setCurrentPrice(newPrice);
         setLastUpdated(now);
         setIsLoading(false);
@@ -80,17 +85,21 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
         setPrevPrice(currentPrice);
         const now = new Date();
         
-        const newData = [...data];
-        if (newData.length >= 120) {
-          newData.shift();
-        }
-        
-        newData.push({
-          time: now,
-          price: fallbackPrice
+        // Use the same pattern for fallback data
+        setData(prevData => {
+          const newData = [...prevData];
+          if (newData.length >= 120) {
+            newData.shift();
+          }
+          
+          newData.push({
+            time: now,
+            price: fallbackPrice
+          });
+          
+          return newData;
         });
         
-        setData(newData);
         setCurrentPrice(fallbackPrice);
         setLastUpdated(now);
       }
@@ -111,10 +120,10 @@ const PriceChart: React.FC<PriceChartProps> = ({ isTrading }) => {
         clearInterval(updateIntervalRef.current);
       }
       
-      // Set new interval (every 60 seconds)
+      // Set new interval (every 2 seconds)
       updateIntervalRef.current = setInterval(() => {
         updateChartWithRealData();
-      }, 2000); // 60 seconds
+      }, 2000);
     } else if (updateIntervalRef.current) {
       clearInterval(updateIntervalRef.current);
     }

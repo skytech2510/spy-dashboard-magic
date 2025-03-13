@@ -11,7 +11,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // This is just for demo purposes. In a real app, you would validate against a secure backend
-const DEMO_PASSWORD = "coolclient";
+const DEMO_PASSWORD = "mycoolclient";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);

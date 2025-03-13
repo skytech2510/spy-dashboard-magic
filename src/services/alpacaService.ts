@@ -41,7 +41,7 @@ export async function getRealTimePrice(): Promise<number | null> {
     }
 
     const data: QuoteResponse = await response.json();
-    console.log(`Current price of ${symbol}: $${data.quote.ap}`);
+    console.log(data);
     return data.quote.ap;
   } catch (error) {
     console.error('Failed to fetch SPY price:', error);
